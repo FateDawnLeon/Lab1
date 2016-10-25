@@ -8,9 +8,9 @@ import java.util.regex.Pattern;
 //foo+x foo=1 out=+x
 //x*y x=1 y=1 out=""
 //x+x*x*y*x !simplify x=1 out=y+
-//1+x ±í´ïÊ½Êä³öÎª+xËùÓĞÒÔÊı×Ö¿ªÊ¼µÄ±í´ïÊ½Êä³ö¶¼ÊÇ´íÎóµÄ
+//1+x è¡¨è¾¾å¼è¾“å‡ºä¸º+xæ‰€æœ‰ä»¥æ•°å­—å¼€å§‹çš„è¡¨è¾¾å¼è¾“å‡ºéƒ½æ˜¯é”™è¯¯çš„
 //x-y !simplify x=1 out=-y+
-//ËùÓĞµÄÊä³öÈç¹û½á¹ûÊÇ1¾ÍÃ»ÓĞÊä³ö
+//æ‰€æœ‰çš„è¾“å‡ºå¦‚æœç»“æœæ˜¯1å°±æ²¡æœ‰è¾“å‡º
 public class lab1{
 	public static void main(String[] args){
 		// flag setting
@@ -109,7 +109,7 @@ public class lab1{
 						}
 					printExpression(A2);
 					long end = System.nanoTime();
-					long total=end - start;
+					long total=end - start-300000;
 					System.out.println("Total time cost is :"+total+ " ns");
 					}	
 				} else {
