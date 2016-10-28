@@ -1,32 +1,33 @@
 package test2;
 
-import java.util.*;
-//import java.util.ArrayList;
-//import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-//foo+x foo=1 out=+x
-//x*y x=1 y=1 out=""
-//x+x*x*y*x !simplify x=1 out=y+
-//1+x 表达式输出为+x所有以数字开始的表达式输出都是错误的
-//x-y !simplify x=1 out=-y+
-//所有的输出如果结果是1就没有输出
+
+/**
+ * 对简单表达式的变量可以带入求值，可以求导
+ * @author FateDawnLeon & haptk
+ */
+
 public class lab1{
+	
 	public static void main(String[] args){
 		// flag setting
-		ArrayList<ArrayList<Node>> a1 = null;//arraylist
+		ArrayList<ArrayList<Node>> a1 = null;
 		boolean sign = true;
 		boolean flagexit = false;
 		String mem = null;
+		Scanner exp = new Scanner(System.in);
+		
 		// main input-output circle
 		while (sign) {
 			System.out.print('>');
-			String str;
-			Scanner s = new Scanner(System.in);
-			str = s.nextLine();
+			String str = exp.nextLine();
 			if (!str.startsWith("!")) {
 				//remove space
 				str = str.replaceAll(" ", "");
+				
                 //add by
 				String rule6 = "[0-9][a-zA-Z]";
 				Pattern p6 = Pattern.compile(rule6);
@@ -41,11 +42,9 @@ public class lab1{
 					m6 = p6.matcher(str);
 					flag6 = m6.find();
 				}
-				//subtract process
+				
+				//subtraction process
 				str = transform_subtract(str);
-				String rule7 = "[1-9][\\^]";
-				Pattern p7 = Pattern.compile(rule7);
-				Matcher m7 = p6.matcher(str);
 				boolean flag7 = m6.find();
 				String rule8 = "[\\^][a-zA-Z]";
 				Pattern p8 = Pattern.compile(rule8);
@@ -55,8 +54,10 @@ public class lab1{
 				if (flag9) {
 					System.out.println("Illegal Expression : Misuse Of Operator ^");
 				}
-				//exponentail process
+				
+				//Exponential process
 				str = transform_exponential(str);
+				
 				//formula check
 				boolean f1 = check(str);
 				if (f1) {
@@ -70,16 +71,18 @@ public class lab1{
 				if (flagexit) {
 					//check whether the simplify command is legal
 					str = str.replaceFirst("!simplify ","");
-					String rule11 = "[\\s0-9A-Za-z\\=]{0,}";
+					String rule11 = "[\\s0-9A-Za-z\\=\\-]{0,}";
 					String rule41 = "[\\=]{2,}";
 					String rule51 = "[A-Za-z][0-9]{1,}";
 					String rule61 = "[0-9][A-Za-z]{1,}";
 					String rule71 = "[A-Za-z][\\=][0-9]{1,}";
+					String rule81 = "[A-Za-z][\\=][\\-][0-9]{1,}";
 					Pattern p11 = Pattern.compile(rule11);
 					Pattern p41 = Pattern.compile(rule41);
 					Pattern p51 = Pattern.compile(rule51);
 					Pattern p61 = Pattern.compile(rule61);
 					Pattern p71 = Pattern.compile(rule71);
+					Pattern p81 = Pattern.compile(rule81);
 					Matcher m11 = p11.matcher(str);
 					boolean flag11 = m11.matches();
 					Matcher m41 = p41.matcher(str);
@@ -90,7 +93,9 @@ public class lab1{
 					boolean flag61 = m61.find();
 					Matcher m71 = p71.matcher(str);
 					boolean flag71 = m71.find();
-					boolean flag100 = flag11 & !flag41 & !flag51 &!flag61 & flag71;		
+					Matcher m81 = p81.matcher(str);
+					boolean flag81 = m81.find();
+					boolean flag100 = flag11 & !flag41 & !flag51 &!flag61 & (flag71 || flag81);		
 					if (!flag100) {
 						System.out.println("Illegal Simplify Command");
 					} else {
@@ -132,7 +137,10 @@ public class lab1{
 				System.out.println("Command Error!");
 			}
 		}
+		
+		exp.close();
 	}
+	
     public static boolean check(String str) {
 		boolean flag2 = str.startsWith("+") || str.startsWith("*");
 		boolean flag3 = str.endsWith("+") || str.endsWith("*");
@@ -149,15 +157,21 @@ public class lab1{
 		Matcher m5 = p5.matcher(str);
 		boolean flag5 = m5.find();
 		boolean flag = flag1 & !flag2 & !flag3 & !flag4 & !flag5;
+		
+		
 		if (!flag1) {
 			System.out.println("Illegal Expression : Containing Illegal Character");
-		} if(flag2) {
+		} 
+		if(flag2) {
 			System.out.println("Illegal Expression : Expression Starts With An Operator");
-		} if(flag3) {
+		} 
+		if(flag3) {
 			System.out.println("Illegal Expression : Expression Ends With An Operator");
-		} if(flag4) {
+		} 
+		if(flag4) {
 			System.out.println("Illegal Expression : An Operator Followed By Another Operator");
-		} if(flag5) {
+		} 
+		if(flag5) {
 			System.out.println("Illegal Expression : An Varible Followed By An Number");
 		}
 		return flag;
@@ -333,6 +347,7 @@ public class lab1{
 		}
 		return fla;
 	}
+	
 	public static void printsingle(int factor,ArrayList<String> set,ArrayList<Integer> nums) {
 		System.out.print(factor);
 		for (int n=0; n<nums.size();n++) {
@@ -345,23 +360,32 @@ public class lab1{
 	public static void printExpression(ArrayList<ArrayList<Node>> arr) {
 		for (int i=0; i<arr.size(); i++) {
 			ArrayList<Node> tmp1 = arr.get(i);
-			for (int j=0; j<tmp1.size(); j++) {
-				Node tmp2 = tmp1.get(j);
-				if (tmp2.isNum) {
-					if (tmp2.getNum()==1) {
-						continue;
-					} else if (tmp2.getNum()==-1) {
-						System.out.print("-");
-						continue;
-					} else {
-						System.out.print(tmp2.getNum());
-					}
+			//deal with the first element 
+			if (tmp1.size()==1 && tmp1.get(0).isNum) {
+				System.out.print(tmp1.get(0).getNum());
+			} else if (tmp1.size()!=1 && tmp1.get(0).isNum) {
+				if (tmp1.get(0).getNum()==1) {
+					//ignore the output
+				} else if (tmp1.get(0).getNum()==-1) {
+					System.out.print("-");
 				} else {
-					System.out.print(tmp2.getC());
-				} if (j<tmp1.size()-1) {
+					System.out.print(tmp1.get(0).getNum());
+					System.out.print("*");
+				}
+			} else if (tmp1.size()==1 && !tmp1.get(0).isNum) {
+				System.out.print(tmp1.get(0).getC());
+			} else {
+				System.out.print(tmp1.get(0).getC());
+				System.out.print("*");
+			}
+			//iterative output for the rest elements
+			for (int j=1; j<tmp1.size(); j++) {
+				System.out.print(tmp1.get(j).getC());
+				if (j<tmp1.size()-1) {
 					System.out.print("*");
 				}
 			}
+			//ending
 			if (i<arr.size()-1) {
 				if (arr.get(i+1).get(0).isNum==false || arr.get(i+1).get(0).getNum()>0) {
 					System.out.print("+");
