@@ -1,4 +1,4 @@
-package test2;
+package lab6;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
  * @author FateDawnLeon & haptk
  */
 
-public class lab1{
+public class Lab1{
 	
 	public static void main(String[] args){
 		// flag setting
@@ -226,6 +226,9 @@ public class lab1{
 	}
 
 	public static ArrayList<ArrayList<Node>> expression(String exp) {
+		if (exp.length()==0) {
+			return new ArrayList<ArrayList<Node>>();
+		}
 		//pre-process
 		String cutter1 = "\\+";
 		String cutter2 = "\\*";
@@ -233,9 +236,17 @@ public class lab1{
 		ArrayList<ArrayList<Node>> vol = new ArrayList<ArrayList<Node>>(); 
 		//storage construction 
 		for (int i=0; i<multiply.length; i++) {
+			if (multiply[i].length()==0) {
+				vol.add(new ArrayList<Node>());
+				continue;
+			}
 			String[] elements = multiply[i].split(cutter2);
 			ArrayList<Node> row = new ArrayList<Node>();
 			for (int j=0; j<elements.length; j++) {
+				if (elements[j].length()==0) {
+					row.add(new Node(""));
+					continue;
+				}
 				Node temp_node;
 				int temp_int;
 				if(Character.isDigit(elements[j].charAt(0)) | elements[j].charAt(0)=='-'){
@@ -249,6 +260,7 @@ public class lab1{
 			}
 			vol.add(row);
 		}
+		System.out.println(vol);
 		return vol;
 	}
 
@@ -393,26 +405,5 @@ public class lab1{
 			}
 		}
 		System.out.println("");
-	}
-}
-
-class Node{
-	public boolean isNum;
-	private int num;
-	private String variable;
-	Node(String variable){
-		this.isNum=false;
-		this.variable=variable;
-	}
-	Node(int num) {
-		this.isNum=true;
-		this.num=num;
-	}
-	public int getNum() {
-		return num;
-	}
-
-	public String getC() {
-		return variable;
 	}
 }
