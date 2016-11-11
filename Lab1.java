@@ -12,6 +12,9 @@ import java.util.regex.Pattern;
 
 public class Lab1{
 	
+	public static String result = null;
+    public static StringBuffer resultbuffer = new StringBuffer();
+
 	public static void main(String[] args){
 		// flag setting
 		ArrayList<ArrayList<Node>> a1 = null;
@@ -321,89 +324,118 @@ public class Lab1{
 		}
 	}
 
-	public static int dersingle(ArrayList<ArrayList<Node>> arr,int i,String der, int fla) {
-		ArrayList<Node> t1 = arr.get(i);
-		ArrayList<Integer> nums = new ArrayList<Integer>();
-		ArrayList<String> set = new ArrayList<String>();
-		int factor=1;
-		for (int j=0; j<t1.size(); j++) {
-			boolean f2 = t1.get(j).isNum;
-			if(f2) {
-				factor = factor * t1.get(j).getNum();
-			} else { 
-				if (set.contains(t1.get(j).getC())) {
-					 int index = set.indexOf(t1.get(j).getC());
-					 int time = nums.get(index);
-					 time++;
-					 nums.remove(index);
-					 nums.add(index,time);
-				} else {
-					 set.add(t1.get(j).getC());
-					 nums.add(1);
-				}	 
-			 }
-		} if (set.contains(der)) {
-			int loc = set.indexOf(der);
-			int coe = nums.get(loc);
-			factor = factor * coe;
-			coe--;
-			nums.remove(loc);
-			nums.add(loc,coe);
-			if (fla == 1) {
-				if (factor>0) {
-					System.out.print("+");
-				}
-			}
-			fla = 1;
-			printsingle(factor,set,nums);
-		}
-		return fla;
-	}
-	
-	public static void printsingle(int factor,ArrayList<String> set,ArrayList<Integer> nums) {
-		System.out.print(factor);
-		for (int n=0; n<nums.size();n++) {
-			for (int p=0; p<nums.get(n);p++) {
-				System.out.print("*"+set.get(n));
-			}
-		}
-	}
+	public static void derivative(ArrayList<ArrayList<Node>> arr,String der){
+        int fla  = 0;
+        der = der.replaceFirst("!d/d ","");
+        String rule1 = "[A-Za-z]{0,}";
+        Pattern p1 = Pattern.compile(rule1);
+        Matcher m1 = p1.matcher(der);
+        boolean flag1 = m1.matches();
+        if (!flag1) {
+            System.out.println("Illegal Derivative Command");
+            resultbuffer.append("Illegal Derivative Command");
+        } else {
+            for (int i=0; i<arr.size(); i++) { 
+                fla = dersingle(arr,i,der,fla);
+            } if (fla == 0){
+                System.out.println("0");
+                resultbuffer.append("0");
+                
+            } else {
+                System.out.println(""); 
+                resultbuffer.append("");
+            }   
+        }
+        result = resultbuffer.toString();
+    }
 
-	public static void printExpression(ArrayList<ArrayList<Node>> arr) {
-		for (int i=0; i<arr.size(); i++) {
-			ArrayList<Node> tmp1 = arr.get(i);
-			//deal with the first element 
-			if (tmp1.size()==1 && tmp1.get(0).isNum) {
-				System.out.print(tmp1.get(0).getNum());
-			} else if (tmp1.size()!=1 && tmp1.get(0).isNum) {
-				if (tmp1.get(0).getNum()==1) {
-					//ignore the output
-				} else if (tmp1.get(0).getNum()==-1) {
-					System.out.print("-");
-				} else {
-					System.out.print(tmp1.get(0).getNum());
-					System.out.print("*");
-				}
-			} else if (tmp1.size()==1 && !tmp1.get(0).isNum) {
-				System.out.print(tmp1.get(0).getC());
-			} else {
-				System.out.print(tmp1.get(0).getC());
-				System.out.print("*");
-			}
-			//iterative output for the rest elements
-			for (int j=1; j<tmp1.size(); j++) {
-				System.out.print(tmp1.get(j).getC());
-				if (j<tmp1.size()-1) {
-					System.out.print("*");
-				}
-			}
-			//ending
-			if (i<arr.size()-1) {
-				if (arr.get(i+1).get(0).isNum==false || arr.get(i+1).get(0).getNum()>0) {
-					System.out.print("+");
-				}
-			}
-		}
-		System.out.println("");
-	}
+    public static int dersingle(ArrayList<ArrayList<Node>> arr,int i,String der, int fla) {
+        ArrayList<Node> t1 = arr.get(i);
+        ArrayList<Integer> nums = new ArrayList<Integer>();
+        ArrayList<String> set = new ArrayList<String>();
+        int factor=1;
+        for (int j=0; j<t1.size(); j++) {
+            boolean f2 = t1.get(j).isNum;
+            if(f2) {
+                factor = factor * t1.get(j).getNum();
+            } else { 
+                if (set.contains(t1.get(j).getC())) {
+                     int index = set.indexOf(t1.get(j).getC());
+                     int time = nums.get(index);
+                     time++;
+                     nums.remove(index);
+                     nums.add(index,time);
+                } else {
+                     set.add(t1.get(j).getC());
+                     nums.add(1);
+                }    
+             }
+        } if (set.contains(der)) {
+            int loc = set.indexOf(der);
+            int coe = nums.get(loc);
+            factor = factor * coe;
+            coe--;
+            nums.remove(loc);
+            nums.add(loc,coe);
+            if (fla == 1) {
+                if (factor>0) {
+                    System.out.print("+");
+                    resultbuffer.append("+");
+                }
+            }
+            fla = 1;
+            printsingle(factor,set,nums);
+        }
+        return fla;
+    }
+    
+    public static void printsingle(int factor,ArrayList<String> set,ArrayList<Integer> nums) {
+        System.out.print(factor);
+        resultbuffer.append(factor);
+        for (int n=0; n<nums.size();n++) {
+            for (int p=0; p<nums.get(n);p++) {
+                System.out.print("*"+set.get(n));
+                resultbuffer.append("*");
+                resultbuffer.append(set.get(n));
+            }
+        }
+    }
+
+    public static void printExpression(ArrayList<ArrayList<Node>> arr) {
+        for (int i=0; i<arr.size(); i++) {
+            ArrayList<Node> tmp1 = arr.get(i);
+            //deal with the first element 
+            if (tmp1.size()==1 && tmp1.get(0).isNum) {
+                System.out.print(tmp1.get(0).getNum());
+            } else if (tmp1.size()!=1 && tmp1.get(0).isNum) {
+                if (tmp1.get(0).getNum()==1) {
+                    //ignore the output
+                } else if (tmp1.get(0).getNum()==-1) {
+                    System.out.print("-");
+                } else {
+                    System.out.print(tmp1.get(0).getNum());
+                    System.out.print("*");
+                }
+            } else if (tmp1.size()==1 && !tmp1.get(0).isNum) {
+                System.out.print(tmp1.get(0).getC());
+            } else {
+                System.out.print(tmp1.get(0).getC());
+                System.out.print("*");
+            }
+            //iterative output for the rest elements
+            for (int j=1; j<tmp1.size(); j++) {
+                System.out.print(tmp1.get(j).getC());
+                if (j<tmp1.size()-1) {
+                    System.out.print("*");
+                }
+            }
+            //ending
+            if (i<arr.size()-1) {
+                if (arr.get(i+1).get(0).isNum==false || arr.get(i+1).get(0).getNum()>0) {
+                    System.out.print("+");
+                }
+            }
+        }
+        System.out.println("");
+    }
 }
