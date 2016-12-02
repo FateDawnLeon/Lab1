@@ -1,5 +1,0 @@
-测试数据（表达式部分）,测试数据（命令部分）,期望结果
-x+y,!d/d 7x,Illegal Derivative Command
-y+y*5*x*y,!d/d z,0
-y+y*5*x*y,!d/d y,1+10*y*x
-y-y*5*x*y,!d/d y,1-10*y*x

@@ -1,21 +1,20 @@
-package lab6;
+package Lab7;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-
 import org.junit.Test;
 
-public class ExpressionTest01 {
+public class ExpressionTest08 {
 
 	@Test
 	public void testExpression() {
-		testCase("-1*x*2+3*y+-4*z+w", "[[-1, x, 2], [3, y], [-4, z], [w]]");
+		testCase("a-b","a-b");
 	}
 	
 	private void testCase(String inputString, String expectedString) {
-		ArrayList<ArrayList<Node>> actual = Lab1.expression(inputString);
-		String actualString = actual.toString();
+		Simplification test = new Simplification(inputString);
+		test.simplify("");
+		String actualString = test.getPolynomial().toString();
 	    System.out.println("expect: "+expectedString);
 		System.out.println("actual: "+actualString);
 		assertEquals(expectedString,actualString);
